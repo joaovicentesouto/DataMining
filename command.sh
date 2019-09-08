@@ -26,7 +26,10 @@
 # Global Variables
 #===============================================================================
 
-export VENV=datamining
+export VENV=venv
+export RAW_DATA=raw_data
+export PREPROCESSED_DATA=preprocessed_data
+
 export HOME=$(pwd)/$VENV
 
 #===============================================================================
@@ -55,6 +58,73 @@ function model()
 # Kaggle Options
 #===============================================================================
 
+# Download raw data from kaggle plataform.
+function download()
+{
+	source $HOME/bin/activate
+
+	mkdir -p $RAW_DATA
+	cd $RAW_DATA
+	kaggle competitions download -c data-mining-class-ufsc-20192
+
+	echo "Download finished!"
+}
+
+# Submmit a model to the competition.
+function submit()
+{
+	echo "It is not implemented yet."
+}
+
+# Setup environment.
+function setup()
+{
+	kaggle_key=$1
+
+	# Setup is ok?
+	if prerequisites;
+	then
+		echo "Setup is already complete!"
+		exit 1;
+	fi
+
+	# Missing pip?
+	if [ command -v pip3 >/dev/null 2>&1 ];
+	then
+		echo "[setup] pip3 is unavailable!"
+		exit 1
+	fi
+
+	# Missing virtualenv?
+	if [ command -v virtualenv >/dev/null 2>&1 ];
+	then
+		echo "[setup] virtualenv is unavailable, run: sudo pip3 install virtualenv!"
+		exit 1
+	fi
+
+	# Wrong kaggle key specified.
+	if [[ ! $kaggle_key == *kaggle\.json ]]; 
+	then
+		echo "kaggle key path not specified! $1"; 
+		exit 1
+	fi
+
+	# Create environment
+	virtualenv -p python3 $VENV
+	source $HOME/bin/activate
+
+	# Install requirements
+	pip3 install -r requirements.txt
+
+	# Configure kaggle
+	mkdir $HOME/.kaggle
+	cp $kaggle_key $HOME/.kaggle/kaggle.json
+	chmod 600 $HOME/.kaggle/kaggle.json
+
+	# Exit
+	echo "Setup successfully complete!"
+}
+
 # Prerequisites to run kaggle commands.
 function prerequisites()
 {
@@ -82,76 +152,32 @@ function prerequisites()
 	return 0
 }
 
-# Download raw data from kaggle plataform.
-function download()
-{
-	if ! prerequisites; then exit 1; fi
+case $1 in
+    plot|run|model)
+		echo "I will call but $1() is not implemented."
+		;;
 
-	source $HOME/bin/activate
+	download|submit)
+		if ! prerequisites;
+		then
+			exit 1; # error
+		fi
+		;;
 
-	mkdir -p data
-	cd data
-	kaggle competitions download -c data-mining-class-ufsc-20192
+	setup)
+		if prerequisites;
+		then
+			echo "Setup already complete."
+			exit 0 # ok
+		fi
+		;;
 
-	echo "Download finished!"
-}
+	# Every else.
+    *)
+		echo "Function $1() not defined."
+		exit 1 # error
+		;;
+esac
 
-# Submmit a model to the competition.
-function submit()
-{
-	if ! prerequisites; then exit 1; fi
-
-	echo "It is not implemented yet."
-}
-
-# Setup environment.
-function setup()
-{
-	kaggle_key=$1
-
-	# Setup is ok?
-	if prerequisites;
-	then
-		echo "Setup is already complete!"
-		exit 1;
-	fi
-
-	# Missing pip?
-	if [ command -v pip >/dev/null 2>&1 ];
-	then
-		echo "[setup] pip is unavailable!"
-		exit 1
-	fi
-
-	# Missing virtualenv?
-	if [ command -v virtualenv >/dev/null 2>&1 ];
-	then
-		echo "[setup] virtualenv is unavailable, run: sudo pip install virtualenv!"
-		exit 1
-	fi
-
-	# Wrong kaggle key specified.
-	if [[ ! $kaggle_key == *kaggle\.json ]]; 
-	then
-		echo "kaggle key path not specified! $1"; 
-		exit 1
-	fi
-
-	# Create environment
-	virtualenv $VENV
-	source $HOME/bin/activate
-
-	# Install requirements
-	pip install -r requirements.txt
-
-	# Configure kaggle
-	mkdir $HOME/.kaggle
-	cp $kaggle_key $HOME/.kaggle/kaggle.json
-	chmod 600 $HOME/.kaggle/kaggle.json
-
-	# Exit
-	echo "Setup successfully complete!"
-}
-
-# Call function
+# Call function passing its arguments.
 "$@"
