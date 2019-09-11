@@ -105,5 +105,6 @@ venv.bak/
 
 # Folders
 *.vscode
-*datamining
-*data
+venv
+raw_data
+preprocessed_data
