@@ -106,5 +106,5 @@ venv.bak/
 # Folders
 *.vscode
 venv
-raw_data
-preprocessed_data
+raw
+preprocessed

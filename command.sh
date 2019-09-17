@@ -27,8 +27,8 @@
 #===============================================================================
 
 export VENV=venv
-export RAW_DATA=raw_data
-export PREPROCESSED_DATA=preprocessed_data
+export RAW_DATA=raw
+export PREPROCESSED_DATA=preprocessed
 
 export HOME=$(pwd)/$VENV
 
@@ -65,7 +65,21 @@ function download()
 
 	mkdir -p $RAW_DATA
 	cd $RAW_DATA
+
+	# Download
 	kaggle competitions download -c data-mining-class-ufsc-20192
+
+	# Unzip
+	unzip genresTest.csv.zip
+	unzip genresTrain.csv.zip
+
+	# Read/Write permissions
+	chmod 660 genresTest.csv
+	chmod 660 genresTrain.csv
+
+	# Clean dir
+	rm -f genresTest.csv.zip
+	rm -f genresTrain.csv.zip
 
 	echo "Download finished!"
 }
