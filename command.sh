@@ -29,29 +29,105 @@
 export VENV=venv
 export RAW_DATA=raw
 export PREPROCESSED_DATA=preprocessed
+export SUBMISSION_DATA=submission
+export MODELS=models
+
+export TRAIN_FILE=$PREPROCESSED_DATA/train-data.arff
+export TEST_FILE=$PREPROCESSED_DATA/test-data.arff
+export SUBMIT_FILE=$SUBMISSION_DATA/submission.csv
 
 export HOME=$(pwd)/$VENV
+
+export WEKA="java -classpath weka.jar"
 
 #===============================================================================
 # Python Options
 #===============================================================================
 
-# Plot data.
-function plot()
+
+# Run experiments
+function prepare()
 {
-	echo "It is not implemented yet."
+	echo "Preparing..."
+
+	mkdir -p $PREPROCESSED_DATA
+	mkdir -p $SUBMISSION_DATA
+
+	# Appends genre to the header
+	cat $RAW_DATA/genresTest.csv \
+		| grep "PAR_3RMS_TCD_10FR_VAR" \
+		| sed  -e "s/\"PAR_3RMS_TCD_10FR_VAR\"/\"PAR_3RMS_TCD_10FR_VAR\",\"GENRE\"/g" \
+		> $PREPROCESSED_DATA/genresTest.csv
+
+	# Make test data to unlabeled data
+	cat $RAW_DATA/genresTest.csv \
+		| grep -v "PAR_3RMS_TCD_10FR_VAR" \
+		| sed  -e "s/$/,?/"       \
+		>> $PREPROCESSED_DATA/genresTest.csv
 }
 
 # Run experiments
-function run()
+function preprocess()
 {
-	echo "It is not implemented yet."
+	echo "Preprocessing..."
+
+	echo "Turn GENRE string to nominal"
+	${WEKA} weka.filters.unsupervised.attribute.StringToNominal -R last \
+		-i $PREPROCESSED_DATA/genresTest.csv -o $PREPROCESSED_DATA/tmp-test-nominal.arff
+
+	echo "Normalizes values"
+	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 1.0 -T 0.0 \
+		-i $PREPROCESSED_DATA/tmp-test-nominal.arff -o $PREPROCESSED_DATA/test-data.arff
+	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 1.0 -T 0.0 \
+		-i $RAW_DATA/genresTrain.csv -o $PREPROCESSED_DATA/tmp-train-normalize.arff
+
+	echo "Removes extreme values"
+	${WEKA} weka.filters.unsupervised.attribute.InterquartileRange -R first-last -O 3.0 -E 6.0 \
+		-i $PREPROCESSED_DATA/tmp-train-normalize.arff -o $PREPROCESSED_DATA/tmp-train-extreme-values.arff
+	${WEKA} weka.filters.unsupervised.instance.RemoveWithValues -S 0.0 -C last -L last \
+		-i $PREPROCESSED_DATA/tmp-train-extreme-values.arff -o $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff
+	${WEKA} weka.filters.unsupervised.attribute.Remove -R 193-194 \
+		-i $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff -o $PREPROCESSED_DATA/train-data.arff
+
+	rm $PREPROCESSED_DATA/tmp*
 }
 
 # Build a model to submit
 function model()
 {
-	echo "It is not implemented yet."
+	if [ ! -f $TRAIN_FILE ]; then
+		echo "Train Data does not exist!"
+		exit 1
+	fi
+
+	${WEKA} weka.classifiers.trees.J48 \
+		-C 0.25 -M 2                   \
+		-t $TRAIN_FILE                 \
+		-d $MODELS/j48.model
+
+	echo "Model builded."
+}
+
+# Run
+function run()
+{
+	if [ ! -f $MODELS/j48.model ]; then
+		echo "J48 Model does not exist!"
+		exit 1
+	fi
+
+	# Header
+	echo "\"Id\",\"Genres\"" > $SUBMIT_FILE
+
+	# Data
+	${WEKA} weka.classifiers.misc.InputMappedClassifier                          \
+		-L $MODELS/j48.model                                                     \
+		-t $TRAIN_FILE -T $TEST_FILE                                             \
+		-classifications weka.classifiers.evaluation.output.prediction.PlainText \
+	| grep "?"                                                                   \
+	| sed -e "s/:/ /g"                                                           \
+	| awk '{print "\""($1 - 1) "\",\"" $4 "\""}'                                 \
+	>> $SUBMIT_FILE
 }
 
 #===============================================================================
@@ -87,7 +163,19 @@ function download()
 # Submmit a model to the competition.
 function submit()
 {
-	echo "It is not implemented yet."
+	MESSAGE=$1
+
+	if [ -z "$MESSAGE" ];
+	then
+		MESSAGE="test"
+	fi
+
+	echo "Submit: $MESSAGE"
+
+	source $HOME/bin/activate
+
+	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $SUBMIT_FILE -m "$MESSAGE"
+
 }
 
 # Setup environment.
@@ -167,8 +255,7 @@ function prerequisites()
 }
 
 case $1 in
-    plot|run|model)
-		echo "I will call but $1() is not implemented."
+    prepare|preprocess|model|run)
 		;;
 
 	download|submit)
