@@ -41,9 +41,31 @@ export HOME=$(pwd)/$VENV
 export WEKA="java -classpath weka.jar"
 
 #===============================================================================
-# Python Options
+# Weka Operations
 #===============================================================================
 
+function build_model() # (model_parameters, train_data, output_model)
+{
+	${WEKA} $1 -t $2 -d $3
+}
+
+function classify() # (model, train_data, unlabeled_data, output_classification)
+{
+	# Header
+	echo "\"Id\",\"Genres\"" > $4
+
+	# Data
+	${WEKA} weka.classifiers.misc.InputMappedClassifier -L $1 -t $2 -T $3        \
+		-classifications weka.classifiers.evaluation.output.prediction.PlainText \
+	| grep "?"                                                                   \
+	| sed -e "s/:/ /g"                                                           \
+	| awk '{print "\""($1 - 1) "\",\"" $4 "\""}'                                 \
+	>> $4
+}
+
+#===============================================================================
+# Running Operations
+#===============================================================================
 
 # Run experiments
 function prepare()
@@ -77,7 +99,7 @@ function preprocess()
 
 	echo "Normalizes values"
 	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 1.0 -T 0.0 \
-		-i $PREPROCESSED_DATA/tmp-test-nominal.arff -o $PREPROCESSED_DATA/test-data.arff
+		-i $PREPROCESSED_DATA/tmp-test-nominal.arff -o $TEST_FILE
 	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 1.0 -T 0.0 \
 		-i $RAW_DATA/genresTrain.csv -o $PREPROCESSED_DATA/tmp-train-normalize.arff
 
@@ -87,7 +109,7 @@ function preprocess()
 	${WEKA} weka.filters.unsupervised.instance.RemoveWithValues -S 0.0 -C last -L last \
 		-i $PREPROCESSED_DATA/tmp-train-extreme-values.arff -o $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff
 	${WEKA} weka.filters.unsupervised.attribute.Remove -R 193-194 \
-		-i $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff -o $PREPROCESSED_DATA/train-data.arff
+		-i $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff -o $TRAIN_FILE
 
 	rm $PREPROCESSED_DATA/tmp*
 }
@@ -100,10 +122,11 @@ function model()
 		exit 1
 	fi
 
-	${WEKA} weka.classifiers.trees.J48 \
-		-C 0.25 -M 2                   \
-		-t $TRAIN_FILE                 \
-		-d $MODELS/j48.model
+	model_parameters="weka.classifiers.trees.J48 -C 0.25 -M 2"
+	train_data=$TRAIN_FILE
+	output_model=$MODELS/j48.model
+
+	build_model "$model_parameters" $train_data $output_model
 
 	echo "Model builded."
 }
@@ -116,22 +139,18 @@ function run()
 		exit 1
 	fi
 
-	# Header
-	echo "\"Id\",\"Genres\"" > $SUBMIT_FILE
+	model=$MODELS/j48.model
+	train_data=$TRAIN_FILE
+	unlabeled_data=$TEST_FILE
+	output_classification=$SUBMIT_FILE
 
-	# Data
-	${WEKA} weka.classifiers.misc.InputMappedClassifier                          \
-		-L $MODELS/j48.model                                                     \
-		-t $TRAIN_FILE -T $TEST_FILE                                             \
-		-classifications weka.classifiers.evaluation.output.prediction.PlainText \
-	| grep "?"                                                                   \
-	| sed -e "s/:/ /g"                                                           \
-	| awk '{print "\""($1 - 1) "\",\"" $4 "\""}'                                 \
-	>> $SUBMIT_FILE
+	classify $model $train_data $unlabeled_data $output_classification
+
+	echo "Data classified."
 }
 
 #===============================================================================
-# Kaggle Options
+# Kaggle Operations
 #===============================================================================
 
 # Download raw data from kaggle plataform.
