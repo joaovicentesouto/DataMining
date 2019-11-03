@@ -28,5 +28,5 @@ The following steps configures a virtual envorinment with python3.
 
 **Submit model result:**
 ```
-	bash command.sh submit
+	bash command.sh submit "A message"
 ```
