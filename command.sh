@@ -34,7 +34,7 @@ export MODELS=models
 
 export TRAIN_FILE=$PREPROCESSED_DATA/train-data.arff
 export TEST_FILE=$PREPROCESSED_DATA/test-data.arff
-export SUBMIT_FILE=$SUBMISSION_DATA/submission.csv
+export SUBMISSION_FILE=$SUBMISSION_DATA/submission.csv
 
 export HOME=$(pwd)/$VENV
 
@@ -44,7 +44,7 @@ export WEKA="java -classpath weka.jar"
 # Weka Operations
 #===============================================================================
 
-function build_model() # (model_parameters, train_data, output_model)
+function build_model() # (model_args, train_data, output_model)
 {
 	${WEKA} $1 -t $2 -d $3
 }
@@ -56,7 +56,7 @@ function classify() # (model, train_data, unlabeled_data, output_classification)
 
 	# Data
 	${WEKA} weka.classifiers.misc.InputMappedClassifier -L $1 -t $2 -T $3        \
-		-classifications weka.classifiers.evaluation.output.prediction.PlainText \
+	    -classifications weka.classifiers.evaluation.output.prediction.PlainText \
 	| grep "?"                                                                   \
 	| sed -e "s/:/ /g"                                                           \
 	| awk '{print "\""($1 - 1) "\",\"" $4 "\""}'                                 \
@@ -122,11 +122,11 @@ function model()
 		exit 1
 	fi
 
-	model_parameters="weka.classifiers.trees.J48 -C 0.25 -M 2"
+	model_args="weka.classifiers.trees.J48 -C 0.25 -M 2"
 	train_data=$TRAIN_FILE
 	output_model=$MODELS/j48.model
 
-	build_model "$model_parameters" $train_data $output_model
+	build_model "$model_args" $train_data $output_model
 
 	echo "Model builded."
 }
@@ -142,7 +142,7 @@ function run()
 	model=$MODELS/j48.model
 	train_data=$TRAIN_FILE
 	unlabeled_data=$TEST_FILE
-	output_classification=$SUBMIT_FILE
+	output_classification=$SUBMISSION_FILE
 
 	classify $model $train_data $unlabeled_data $output_classification
 
@@ -193,7 +193,7 @@ function submit()
 
 	source $HOME/bin/activate
 
-	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $SUBMIT_FILE -m "$MESSAGE"
+	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $SUBMISSION_FILE -m "$MESSAGE"
 
 }
 
