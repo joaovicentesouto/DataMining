@@ -39,6 +39,7 @@ export SUBMISSION_FILE=$SUBMISSION_DATA/submission.csv
 export HOME=$(pwd)/$VENV
 
 export WEKA="java -classpath weka.jar"
+export WEKA36="java -classpath weka-3-6.jar"
 
 #===============================================================================
 # Weka Operations
@@ -74,18 +75,19 @@ function prepare()
 
 	mkdir -p $PREPROCESSED_DATA
 	mkdir -p $SUBMISSION_DATA
+	mkdir -p $MODELS
 
-	# Appends genre to the header
-	cat $RAW_DATA/genresTest.csv \
-		| grep "PAR_3RMS_TCD_10FR_VAR" \
-		| sed  -e "s/\"PAR_3RMS_TCD_10FR_VAR\"/\"PAR_3RMS_TCD_10FR_VAR\",\"GENRE\"/g" \
-		> $PREPROCESSED_DATA/genresTest.csv
+	# # Appends genre to the header
+	# cat $RAW_DATA/genresTest.csv \
+	# 	| grep "PAR_3RMS_TCD_10FR_VAR" \
+	# 	| sed  -e "s/\"PAR_3RMS_TCD_10FR_VAR\"/\"PAR_3RMS_TCD_10FR_VAR\",\"GENRE\"/g" \
+	# 	> $PREPROCESSED_DATA/genresTest.csv
 
-	# Make test data to unlabeled data
-	cat $RAW_DATA/genresTest.csv \
-		| grep -v "PAR_3RMS_TCD_10FR_VAR" \
-		| sed  -e "s/$/,?/"       \
-		>> $PREPROCESSED_DATA/genresTest.csv
+	# # Make test data to unlabeled data
+	# cat $RAW_DATA/genresTest.csv \
+	# 	| grep -v "PAR_3RMS_TCD_10FR_VAR" \
+	# 	| sed  -e "s/$/,?/"       \
+	# 	>> $PREPROCESSED_DATA/genresTest.csv
 }
 
 # Run experiments
@@ -93,23 +95,41 @@ function preprocess()
 {
 	echo "Preprocessing..."
 
-	echo "Turn GENRE string to nominal"
-	${WEKA} weka.filters.unsupervised.attribute.StringToNominal -R last \
-		-i $PREPROCESSED_DATA/genresTest.csv -o $PREPROCESSED_DATA/tmp-test-nominal.arff
+	echo "Build ARFF with Original Data"
 
-	echo "Normalizes values"
-	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 1.0 -T 0.0 \
-		-i $PREPROCESSED_DATA/tmp-test-nominal.arff -o $TEST_FILE
-	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 1.0 -T 0.0 \
-		-i $RAW_DATA/genresTrain.csv -o $PREPROCESSED_DATA/tmp-train-normalize.arff
+	${WEKA} weka.core.converters.CSVLoader $RAW_DATA/genresTrain.csv > $PREPROCESSED_DATA/train-nn.arff
+	${WEKA} weka.core.converters.CSVLoader $RAW_DATA/genresTest.csv > $PREPROCESSED_DATA/tmp-test-nn.arff
 
-	echo "Removes extreme values"
+	${WEKA} weka.filters.unsupervised.attribute.Add -T NOM -N GENRE -L Pop,Blues,Jazz,Classical,Rock,Metal -C last -W 1.0 \
+		-i $PREPROCESSED_DATA/tmp-test-nn.arff -o $PREPROCESSED_DATA/test-nn.arff
+
+	echo "Build ARFF with Normalized Data"
+
+	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 2.0 -T -1.0 \
+		-b -i $PREPROCESSED_DATA/train-nn.arff -o $PREPROCESSED_DATA/train-n.arff \
+		-r $PREPROCESSED_DATA/test-nn.arff -s $PREPROCESSED_DATA/test-n.arff
+
+	echo "Build ARFF with Principal Components Algorithm Data"
+
+	${WEKA36} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-pca.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-pca.arff \
+		-c last \
+		-E "weka.attributeSelection.PrincipalComponents -R 0.95 -A 5" \
+		-S "weka.attributeSelection.Ranker -T -1.7976931348623157E308 -N -1"
+
 	${WEKA} weka.filters.unsupervised.attribute.InterquartileRange -R first-last -O 3.0 -E 6.0 \
-		-i $PREPROCESSED_DATA/tmp-train-normalize.arff -o $PREPROCESSED_DATA/tmp-train-extreme-values.arff
+		-i $PREPROCESSED_DATA/train-n-pca.arff -o $PREPROCESSED_DATA/tmp-train-quartis.arff
 	${WEKA} weka.filters.unsupervised.instance.RemoveWithValues -S 0.0 -C last -L last \
-		-i $PREPROCESSED_DATA/tmp-train-extreme-values.arff -o $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff
-	${WEKA} weka.filters.unsupervised.attribute.Remove -R 193-194 \
-		-i $PREPROCESSED_DATA/tmp-train-extreme-values-free.arff -o $TRAIN_FILE
+		-i $PREPROCESSED_DATA/tmp-train-quartis.arff -o $PREPROCESSED_DATA/train-extremes.arff
+	${WEKA} weka.filters.unsupervised.attribute.Remove -R 76-77 \
+		-i $PREPROCESSED_DATA/train-extremes.arff -o $PREPROCESSED_DATA/tmp-train-final.arff
+	
+	echo "Build ARFF with Normalized Data"
+
+	${WEKA} weka.filters.unsupervised.attribute.Normalize -S 2.0 -T -1.0 \
+		-b -i $PREPROCESSED_DATA/tmp-train-final.arff -o $PREPROCESSED_DATA/train-final.arff \
+		-r $PREPROCESSED_DATA/test-n-pca.arff -s $PREPROCESSED_DATA/test-final.arff
 
 	rm $PREPROCESSED_DATA/tmp*
 }
@@ -134,15 +154,10 @@ function model()
 # Run
 function run()
 {
-	if [ ! -f $MODELS/j48.model ]; then
-		echo "J48 Model does not exist!"
-		exit 1
-	fi
-
-	model=$MODELS/j48.model
-	train_data=$TRAIN_FILE
-	unlabeled_data=$TEST_FILE
-	output_classification=$SUBMISSION_FILE
+	model=$MODELS/$1.model
+	train_data=$PREPROCESSED_DATA/train-$2.arff
+	unlabeled_data=$PREPROCESSED_DATA/test-$2.arff
+	output_classification=$SUBMISSION_DATA/submission-$1.csv
 
 	classify $model $train_data $unlabeled_data $output_classification
 
@@ -156,17 +171,17 @@ function run()
 # Download raw data from kaggle plataform.
 function download()
 {
-	source $HOME/bin/activate
+	# source $HOME/bin/activate
 
 	mkdir -p $RAW_DATA
 	cd $RAW_DATA
 
 	# Download
-	kaggle competitions download -c data-mining-class-ufsc-20192
+	# kaggle competitions download -c data-mining-class-ufsc-20192
 
 	# Unzip
-	unzip genresTest.csv.zip
-	unzip genresTrain.csv.zip
+	# unzip genresTest.csv.zip
+	# unzip genresTrain.csv.zip
 
 	# Read/Write permissions
 	chmod 660 genresTest.csv
