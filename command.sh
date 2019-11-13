@@ -60,7 +60,7 @@ function classify() # (model, train_data, unlabeled_data, output_classification)
 	    -classifications weka.classifiers.evaluation.output.prediction.PlainText \
 	| grep "?"                                                                   \
 	| sed -e "s/:/ /g"                                                           \
-	| awk '{print "\""($1 - 1) "\",\"" $4 "\""}'                                 \
+	| awk '{genre=0; if($4==1) {genre=5;} else if($4==2) {genre=1;} else if($4==3) {genre=3;} else if($4==4) {genre=2;} else if($4==5) {genre=6;} else if($4==6) {genre=4;}; print "\""($1 - 1) "\",\"" genre "\""}' \
 	>> $4
 }
 
@@ -216,140 +216,38 @@ function feature_selection()
 
 function build()
 {
-	echo "Random Forest 0"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn-cfss-foward rfnn-cfss-foward > rfnn-cfss-foward.txt
+	# echo "Random Forest 0"
+	# model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn rfnn > logs/rfnn.txt
 
-	echo "Random Forest 1"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n-cfss-foward rfn-cfss-foward > rfn-cfss-foward.txt
-
-	echo "Random Forest 2"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n-cfss-backward rfn-cfss-backward > rfn-cfss-backward.txt
-
-	echo "Random Forest 3"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn-ca-0.2 rfnn-ca-0.2 > rfnn-ca-0.2.txt
-
-	echo "Random Forest 4"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn-ca-0.2 rfnn-ca-0.25 > rfnn-ca-0.25.txt
-
-	echo "Random Forest 5"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n-ca-0.2 rfn-ca-0.2 > rfn-ca-0.2.txt
-
-	echo "Random Forest 6"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n-ca-0.2 rfn-ca-0.25 > rfn-ca-0.25.txt
-
-	echo "Random Forest 7"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn-gra-0.1 rfnn-gra-0.1 > rfnn-gra-0.1.txt
-
-	echo "Random Forest 8"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn-gra-0.15 rfnn-gra-0.15 > rfnn-gra-0.15.txt
-
-	echo "Random Forest 9"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n-gra-0.1 rfn-gra-0.1 > rfn-gra-0.1.txt
-
-	echo "Random Forest 10"
-	model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n-gra-0.15 rfn-gra-0.15 > rfn-gra-0.15.txt
+	# echo "Random Forest 1"
+	# model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n rfn > logs/rfn.txt
 
 
-	echo "J48 0"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn-cfss-foward j48nn-cfss-foward > j48nn-cfss-foward.txt
+	# echo "J48 0"
+	# model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn j48nn > logs/j48nn.txt
 
-	echo "J48 1"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" n-cfss-foward j48n-cfss-foward > j48n-cfss-foward.txt
-
-	echo "J48 2"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" n-cfss-backward j48n-cfss-backward > j48n-cfss-backward.txt
-
-	echo "J48 3"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn-ca-0.2 j48nn-ca-0.2 > j48nn-ca-0.2.txt
-
-	echo "J48 4"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn-ca-0.2 j48nn-ca-0.25 > j48nn-ca-0.25.txt
-
-	echo "J48 5"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" n-ca-0.2 j48n-ca-0.2 > j48n-ca-0.2.txt
-
-	echo "J48 6"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" n-ca-0.2 j48n-ca-0.25 > j48n-ca-0.25.txt
-
-	echo "J48 7"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn-gra-0.1 j48nn-gra-0.1 > j48nn-gra-0.1.txt
-
-	echo "J48 8"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn-gra-0.15 j48nn-gra-0.15 > j48nn-gra-0.15.txt
-
-	echo "J48 9"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" n-gra-0.1 j48n-gra-0.1 > j48n-gra-0.1.txt
-
-	echo "J48 10"
-	model "weka.classifiers.trees.J48 -C 0.25 -M 2" n-gra-0.15 j48n-gra-0.15 > j48n-gra-0.15.txt
+	# echo "J48 1"
+	# model "weka.classifiers.trees.J48 -C 0.25 -M 2" n j48n > logs/j48n.txt
 
 
-	echo "Naive Bayes 0"
-	model "weka.classifiers.bayes.NaiveBayes" nn-cfss-foward nbnn-cfss-foward > nbnn-cfss-foward.txt
+	# echo "Naive Bayes 0"
+	# model "weka.classifiers.bayes.NaiveBayes" nn nbnn > logs/nbnn.txt
 
-	echo "Naive Bayes 1"
-	model "weka.classifiers.bayes.NaiveBayes" n-cfss-foward nbn-cfss-foward > nbn-cfss-foward.txt
-
-	echo "Naive Bayes 2"
-	model "weka.classifiers.bayes.NaiveBayes" n-cfss-backward nbn-cfss-backward > nbn-cfss-backward.txt
-
-	echo "Naive Bayes 3"
-	model "weka.classifiers.bayes.NaiveBayes" nn-ca-0.2 nbnn-ca-0.2 > nbnn-ca-0.2.txt
-
-	echo "Naive Bayes 4"
-	model "weka.classifiers.bayes.NaiveBayes" nn-ca-0.2 nbnn-ca-0.25 > nbnn-ca-0.25.txt
-
-	echo "Naive Bayes 5"
-	model "weka.classifiers.bayes.NaiveBayes" n-ca-0.2 nbn-ca-0.2 > nbn-ca-0.2.txt
-
-	echo "Naive Bayes 6"
-	model "weka.classifiers.bayes.NaiveBayes" n-ca-0.2 nbn-ca-0.25 > nbn-ca-0.25.txt
-
-	echo "Naive Bayes 7"
-	model "weka.classifiers.bayes.NaiveBayes" nn-gra-0.1 nbnn-gra-0.1 > nbnn-gra-0.1.txt
-
-	echo "Naive Bayes 8"
-	model "weka.classifiers.bayes.NaiveBayes" nn-gra-0.15 nbnn-gra-0.15 > nbnn-gra-0.15.txt
-
-	echo "Naive Bayes 9"
-	model "weka.classifiers.bayes.NaiveBayes" n-gra-0.1 nbn-gra-0.1 > nbn-gra-0.1.txt
-
-	echo "Naive Bayes 10"
-	model "weka.classifiers.bayes.NaiveBayes" n-gra-0.15 nbn-gra-0.15 > nbn-gra-0.15.txt
+	# echo "Naive Bayes 1"
+	# model "weka.classifiers.bayes.NaiveBayes" n nbn > logs/nbn.txt
 
 
-	echo "MLP 0"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn-cfss-foward mlpnn-cfss-foward > mlpnn-cfss-foward.txt
+	# echo "MLP 0"
+	# model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn mlpnn > logs/mlpnn.txt
 
-	echo "MLP 1"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n-cfss-foward mlpn-cfss-foward > mlpn-cfss-foward.txt
+	# echo "MLP 1"
+	# model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n mlpn > logs/mlpn.txt
 
-	echo "MLP 2"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n-cfss-backward mlpn-cfss-backward > mlpn-cfss-backward.txt
+	echo "SMO 0"
+	model "weka.classifiers.functions.SMO -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"" nn smonn > logs/smonn.txt
 
-	echo "MLP 3"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn-ca-0.2 mlpnn-ca-0.2 > mlpnn-ca-0.2.txt
-
-	echo "MLP 4"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn-ca-0.2 mlpnn-ca-0.25 > mlpnn-ca-0.25.txt
-
-	echo "MLP 5"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n-ca-0.2 mlpn-ca-0.2 > mlpn-ca-0.2.txt
-
-	echo "MLP 6"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n-ca-0.2 mlpn-ca-0.25 > mlpn-ca-0.25.txt
-
-	echo "MLP 7"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn-gra-0.1 mlpnn-gra-0.1 > mlpnn-gra-0.1.txt
-
-	echo "MLP 8"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn-gra-0.15 mlpnn-gra-0.15 > mlpnn-gra-0.15.txt
-
-	echo "MLP 9"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n-gra-0.1 mlpn-gra-0.1 > mlpn-gra-0.1.txt
-
-	echo "MLP 10"
-	model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n-gra-0.15 mlpn-gra-0.15 > mlpn-gra-0.15.txt
+	echo "SMO 1"
+	model "weka.classifiers.functions.SMO -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"" n smon > logs/smon.txt
 }
 
 # Build a model to submit
@@ -372,139 +270,47 @@ function model()
 function run_models()
 {
 	# echo "Random Forest 0"
-	# run rf nn-cfss-foward
+	# run rf nn
 
 	# echo "Random Forest 1"
-	# run rf n-cfss-foward
-
-	# echo "Random Forest 2"
-	# run rf n-cfss-backward
-
-	# echo "Random Forest 3"
-	# run rf nn-ca-0.2
-
-	# echo "Random Forest 4"
-	# run rf nn-ca-0.25
-
-	# echo "Random Forest 5"
-	# run rf n-ca-0.2
-
-	# echo "Random Forest 6"
-	# run rf n-ca-0.25
-
-	# echo "Random Forest 7"
-	# run rf nn-gra-0.1
-
-	# echo "Random Forest 8"
-	# run rf nn-gra-0.15
-
-	# echo "Random Forest 9"
-	# run rf n-gra-0.1
-
-	# echo "Random Forest 10"
-	# run rf n-gra-0.15
+	# run rf n
 
 
 	# echo "J48 0"
-	# run j48 nn-cfss-foward
+	# run j48 nn
 
 	# echo "J48 1"
-	# run j48 n-cfss-foward
-
-	# echo "J48 2"
-	# run j48 n-cfss-backward
-
-	# echo "J48 3"
-	# run j48 nn-ca-0.2
-
-	# echo "J48 4"
-	# run j48 nn-ca-0.25
-
-	# echo "J48 5"
-	# run j48 n-ca-0.2
-
-	# echo "J48 6"
-	# run j48 n-ca-0.25
-
-	# echo "J48 7"
-	# run j48 nn-gra-0.1
-
-	# echo "J48 8"
-	# run j48 nn-gra-0.15
-
-	# echo "J48 9"
-	# run j48 n-gra-0.1
-
-	# echo "J48 10"
-	# run j48 n-gra-0.15
+	# run j48 n
 
 
 	# echo "Naive Bayes 0"
-	# run nb nn-cfss-foward
+	# run nb nn
 
 	# echo "Naive Bayes 1"
-	# run nb n-cfss-foward
+	# run nb n
 
-	# echo "Naive Bayes 2"
-	# run nb n-cfss-backward
 
-	# echo "Naive Bayes 3"
-	# run nb nn-ca-0.2
+	# echo "SMO 0"
+	# run smo nn
 
-	# echo "Naive Bayes 4"
-	# run nb nn-ca-0.25
-
-	# echo "Naive Bayes 5"
-	# run nb n-ca-0.2
-
-	# echo "Naive Bayes 6"
-	# run nb n-ca-0.25
-
-	# echo "Naive Bayes 7"
-	# run nb nn-gra-0.1
-
-	# echo "Naive Bayes 8"
-	# run nb nn-gra-0.15
-
-	# echo "Naive Bayes 9"
-	# run nb n-gra-0.1
-
-	# echo "Naive Bayes 10"
-	# run nb n-gra-0.15
+	# echo "SMO 1"
+	# run smo n
 
 
 	# echo "MLP 0"
-	# run mlp nn-cfss-foward
+	# run mlp nn
 
-	echo "MLP 1"
-	run mlp n-cfss-foward
+	# echo "MLP 1"
+	# run mlp n
 
-	echo "MLP 2"
-	run mlp n-cfss-backward
 
-	echo "MLP 3"
-	run mlp nn-ca-0.2
 
-	echo "MLP 4"
-	run mlp nn-ca-0.25
+	echo "IBK 0"
+	run ibk nn
 
-	echo "MLP 5"
-	run mlp n-ca-0.2
+	echo "IBK 1"
+	run ibk n
 
-	echo "MLP 6"
-	run mlp n-ca-0.25
-
-	echo "MLP 7"
-	run mlp nn-gra-0.1
-
-	echo "MLP 8"
-	run mlp nn-gra-0.15
-
-	echo "MLP 9"
-	run mlp n-gra-0.1
-
-	echo "MLP 10"
-	run mlp n-gra-0.15
 }
 
 # Run
@@ -569,18 +375,19 @@ function download()
 # Submmit a model to the competition.
 function submit()
 {
-	MESSAGE=$1
+	FILE=$SUBMISSION_DATA/$1
+	MESSAGE=$2
 
 	if [ -z "$MESSAGE" ];
 	then
 		MESSAGE="test"
 	fi
 
-	echo "Submit: $MESSAGE"
+	echo "Submit $FILE: $MESSAGE"
 
 	source $HOME/bin/activate
 
-	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $SUBMISSION_FILE -m "$MESSAGE"
+	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $FILE -m "$MESSAGE"
 
 }
 
@@ -661,7 +468,7 @@ function prerequisites()
 }
 
 case $1 in
-    prepare|preprocess|model|run|feature_selection|build|run_models|exchange)
+    prepare|preprocess|model|run|feature_selection|build|run_models|exchange|run)
 		;;
 
 	download|submit)
