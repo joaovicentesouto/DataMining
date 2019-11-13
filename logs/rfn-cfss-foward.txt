@@ -1,0 +1,87 @@
+
+Options: -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1 
+
+=== Classifier model (full training set) ===
+
+RandomForest
+
+Bagging with 100 iterations and base learner
+
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1 -do-not-check-capabilities
+
+Time taken to build model: 8.95 seconds
+
+Time taken to test model on training data: 0.67 seconds
+
+=== Error on training data ===
+
+Correctly Classified Instances       12495              100      %
+Incorrectly Classified Instances         0                0      %
+Kappa statistic                          1     
+Mean absolute error                      0.0254
+Root mean squared error                  0.056 
+Relative absolute error                  9.4592 %
+Root relative squared error             15.2948 %
+Total Number of Instances            12495     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     Pop
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     Blues
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     Jazz
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     Classical
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     Rock
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     Metal
+Weighted Avg.    1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     
+
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e    f   <-- classified as
+ 1575    0    0    0    0    0 |    a = Pop
+    0 1596    0    0    0    0 |    b = Blues
+    0    0 3003    0    0    0 |    c = Jazz
+    0    0    0 3444    0    0 |    d = Classical
+    0    0    0    0 1953    0 |    e = Rock
+    0    0    0    0    0  924 |    f = Metal
+
+Time taken to perform cross-validation: 82.72 seconds
+
+
+=== Stratified cross-validation ===
+
+Correctly Classified Instances       11599               92.8291 %
+Incorrectly Classified Instances       896                7.1709 %
+Kappa statistic                          0.9106
+Mean absolute error                      0.0708
+Root mean squared error                  0.1516
+Relative absolute error                 26.4233 %
+Root relative squared error             41.3991 %
+Total Number of Instances            12495     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.958    0.007    0.949      0.958    0.954      0.947    0.998     0.989     Pop
+                 0.994    0.006    0.961      0.994    0.977      0.974    1.000     0.998     Blues
+                 0.877    0.028    0.909      0.877    0.893      0.860    0.988     0.964     Jazz
+                 0.962    0.040    0.901      0.962    0.931      0.904    0.993     0.980     Classical
+                 0.881    0.008    0.954      0.881    0.916      0.902    0.994     0.975     Rock
+                 0.904    0.003    0.954      0.904    0.928      0.923    0.996     0.971     Metal
+Weighted Avg.    0.928    0.021    0.929      0.928    0.928      0.909    0.994     0.978     
+
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e    f   <-- classified as
+ 1509   17    6    1   36    6 |    a = Pop
+    5 1586    3    1    1    0 |    b = Blues
+    0    0 2635  352   15    1 |    c = Jazz
+    0    0  129 3314    1    0 |    d = Classical
+   56   15  123    6 1720   33 |    e = Rock
+   20   32    4    3   30  835 |    f = Metal
+
+Model builded.

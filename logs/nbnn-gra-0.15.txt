@@ -1,0 +1,129 @@
+
+=== Classifier model (full training set) ===
+
+Naive Bayes Classifier
+
+                   Class
+Attribute            Pop     Blues      Jazz Classical      Rock     Metal
+                  (0.13)    (0.13)    (0.24)    (0.28)    (0.16)    (0.07)
+===========================================================================
+PAR_SFMV24
+  mean             0.0005    0.0006         0         0    0.0003     0.001
+  std. dev.        0.0004    0.0005         0         0    0.0004    0.0003
+  weight sum         1575      1596      3003      3444      1953       924
+  precision             0         0         0         0         0         0
+
+PAR_SFM24
+  mean              0.042    0.0589    0.0823    0.0826     0.062    0.0481
+  std. dev.        0.0169    0.0228    0.0009    0.0004    0.0151    0.0179
+  weight sum         1575      1596      3003      3444      1953       924
+  precision             0         0         0         0         0         0
+
+PAR_MFCCV1
+  mean             0.1417    0.0135    1.3084    1.4576   -0.3366    -0.596
+  std. dev.        0.6787    0.7811    1.1342    0.9026    0.6982    0.7012
+  weight sum         1575      1596      3003      3444      1953       924
+  precision        0.0007    0.0007    0.0007    0.0007    0.0007    0.0007
+
+PAR_MFCC1
+  mean             0.1417    0.0135    1.3084    1.4576   -0.3366    -0.596
+  std. dev.        0.6787    0.7811    1.1342    0.9026    0.6982    0.7012
+  weight sum         1575      1596      3003      3444      1953       924
+  precision        0.0007    0.0007    0.0007    0.0007    0.0007    0.0007
+
+PAR_ASS
+  mean              1.561    1.3669    1.1128    1.0087    1.6839    1.7313
+  std. dev.        0.3055    0.2553     0.314    0.2202    0.3116    0.3025
+  weight sum         1575      1596      3003      3444      1953       924
+  precision        0.0003    0.0003    0.0003    0.0003    0.0003    0.0003
+
+PAR_SFM15
+  mean             0.0535    0.0514    0.0495     0.041    0.0644    0.0694
+  std. dev.        0.0111    0.0083    0.0147    0.0119    0.0096    0.0078
+  weight sum         1575      1596      3003      3444      1953       924
+  precision             0         0         0         0         0         0
+
+PAR_SFM11
+  mean             0.0404    0.0409     0.034    0.0285    0.0475     0.052
+  std. dev.        0.0087    0.0071    0.0113    0.0086    0.0077    0.0078
+  weight sum         1575      1596      3003      3444      1953       924
+  precision             0         0         0         0         0         0
+
+
+
+Time taken to build model: 0.25 seconds
+
+Time taken to test model on training data: 0.24 seconds
+
+=== Error on training data ===
+
+Correctly Classified Instances        7571               60.5922 %
+Incorrectly Classified Instances      4924               39.4078 %
+Kappa statistic                          0.504 
+Mean absolute error                      0.1424
+Root mean squared error                  0.3224
+Relative absolute error                 53.1351 %
+Root relative squared error             88.0655 %
+Total Number of Instances            12495     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.568    0.031    0.724      0.568    0.637      0.597    0.947     0.710     Pop
+                 0.422    0.035    0.636      0.422    0.507      0.463    0.876     0.548     Blues
+                 0.361    0.084    0.576      0.361    0.444      0.331    0.832     0.564     Jazz
+                 0.937    0.229    0.609      0.937    0.738      0.640    0.909     0.707     Classical
+                 0.506    0.066    0.588      0.506    0.544      0.469    0.869     0.587     Rock
+                 0.761    0.055    0.527      0.761    0.623      0.599    0.948     0.645     Metal
+Weighted Avg.    0.606    0.106    0.610      0.606    0.586      0.508    0.888     0.630     
+
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e    f   <-- classified as
+  895  188    6    0  418   68 |    a = Pop
+  236  673  238  179   49  221 |    b = Blues
+    0   34 1085 1795   89    0 |    c = Jazz
+    0    0  212 3227    5    0 |    d = Classical
+   65  124  339   95  988  342 |    e = Rock
+   40   39    4    7  131  703 |    f = Metal
+
+Time taken to perform cross-validation: 0.36 seconds
+
+
+=== Stratified cross-validation ===
+
+Correctly Classified Instances        7550               60.4242 %
+Incorrectly Classified Instances      4945               39.5758 %
+Kappa statistic                          0.5019
+Mean absolute error                      0.1427
+Root mean squared error                  0.3228
+Relative absolute error                 53.2357 %
+Root relative squared error             88.1796 %
+Total Number of Instances            12495     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.563    0.032    0.720      0.563    0.632      0.592    0.947     0.706     Pop
+                 0.419    0.036    0.631      0.419    0.503      0.459    0.876     0.545     Blues
+                 0.356    0.083    0.575      0.356    0.440      0.328    0.831     0.563     Jazz
+                 0.940    0.231    0.608      0.940    0.738      0.641    0.909     0.705     Classical
+                 0.506    0.066    0.586      0.506    0.543      0.467    0.869     0.586     Rock
+                 0.759    0.055    0.526      0.759    0.621      0.597    0.947     0.643     Metal
+Weighted Avg.    0.604    0.107    0.608      0.604    0.584      0.506    0.887     0.627     
+
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e    f   <-- classified as
+  886  194    6    0  421   68 |    a = Pop
+  239  668  238  180   50  221 |    b = Blues
+    0   34 1070 1809   90    0 |    c = Jazz
+    0    0  202 3237    5    0 |    d = Classical
+   65  124  341   92  988  343 |    e = Rock
+   40   39    4    7  133  701 |    f = Metal
+
+Model builded.
