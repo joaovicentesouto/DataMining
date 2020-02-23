@@ -1,0 +1,32 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.GainRatioAttributeEval 
+Search:       weka.attributeSelection.Ranker -T 0.15 -N -1
+Relation:     genresTrain
+Instances:    12495
+Attributes:   192
+              [list of attributes omitted]
+Evaluation mode:    evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Attribute ranking.
+	Threshold for discarding attributes:   0.15  
+
+Attribute Evaluator (supervised, Class (nominal): 192 GENRE):
+	Gain Ratio feature evaluator
+
+Ranked attributes:
+ 0.274    126 PAR_SFMV24
+ 0.246    101 PAR_SFM24
+ 0.16     148 PAR_MFCCV1
+ 0.16     128 PAR_MFCC1
+ 0.159     76 PAR_ASS
+ 0.153     92 PAR_SFM15
+ 0.151     88 PAR_SFM11
+
+Selected attributes: 126,101,148,128,76,92,88 : 7
+

@@ -60,7 +60,7 @@ function classify() # (model, train_data, unlabeled_data, output_classification)
 	    -classifications weka.classifiers.evaluation.output.prediction.PlainText \
 	| grep "?"                                                                   \
 	| sed -e "s/:/ /g"                                                           \
-	| awk '{print "\""($1 - 1) "\",\"" $4 "\""}'                                 \
+	| awk '{genre=0; if($4==1) {genre=5;} else if($4==2) {genre=1;} else if($4==3) {genre=3;} else if($4==4) {genre=2;} else if($4==5) {genre=6;} else if($4==6) {genre=4;}; print "\""($1 - 1) "\",\"" genre "\""}' \
 	>> $4
 }
 
@@ -134,34 +134,212 @@ function preprocess()
 	rm $PREPROCESSED_DATA/tmp*
 }
 
+function feature_selection()
+{
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-nn.arff -o $PREPROCESSED_DATA/train-nn-cfss-foward.arff \
+		-r $PREPROCESSED_DATA/test-nn.arff -s $PREPROCESSED_DATA/test-nn-cfss-foward.arff \
+		-c last \
+		-E "weka.attributeSelection.CfsSubsetEval -P 1 -E 1" \
+		-S "weka.attributeSelection.BestFirst -D 1 -N 5"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-cfss-foward.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-cfss-foward.arff \
+		-c last \
+		-E "weka.attributeSelection.CfsSubsetEval -P 1 -E 1" \
+		-S "weka.attributeSelection.BestFirst -D 1 -N 5"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-cfss-backward.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-cfss-backward.arff \
+		-c last \
+		-E "weka.attributeSelection.CfsSubsetEval -P 1 -E 1" \
+		-S "weka.attributeSelection.BestFirst -D 0 -N 5"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-nn.arff -o $PREPROCESSED_DATA/train-nn-ca-0.2.arff \
+		-r $PREPROCESSED_DATA/test-nn.arff -s $PREPROCESSED_DATA/test-nn-ca-0.2.arff \
+		-c last \
+		-E "weka.attributeSelection.CorrelationAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.2 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-nn.arff -o $PREPROCESSED_DATA/train-nn-ca-0.25.arff \
+		-r $PREPROCESSED_DATA/test-nn.arff -s $PREPROCESSED_DATA/test-nn-ca-0.25.arff \
+		-c last \
+		-E "weka.attributeSelection.CorrelationAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.25 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-ca-0.2.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-ca-0.2.arff \
+		-c last \
+		-E "weka.attributeSelection.CorrelationAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.2 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-ca-0.25.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-ca-0.25.arff \
+		-c last \
+		-E "weka.attributeSelection.CorrelationAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.25 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-nn.arff -o $PREPROCESSED_DATA/train-nn-gra-0.1.arff \
+		-r $PREPROCESSED_DATA/test-nn.arff -s $PREPROCESSED_DATA/test-nn-gra-0.1.arff \
+		-c last \
+		-E "weka.attributeSelection.GainRatioAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.1 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-nn.arff -o $PREPROCESSED_DATA/train-nn-gra-0.15.arff \
+		-r $PREPROCESSED_DATA/test-nn.arff -s $PREPROCESSED_DATA/test-nn-gra-0.15.arff \
+		-c last \
+		-E "weka.attributeSelection.GainRatioAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.15 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-gra-0.1.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-gra-0.1.arff \
+		-c last \
+		-E "weka.attributeSelection.GainRatioAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.1 -N -1"
+
+	${WEKA} weka.filters.supervised.attribute.AttributeSelection \
+		-b -i $PREPROCESSED_DATA/train-n.arff -o $PREPROCESSED_DATA/train-n-gra-0.15.arff \
+		-r $PREPROCESSED_DATA/test-n.arff -s $PREPROCESSED_DATA/test-n-gra-0.15.arff \
+		-c last \
+		-E "weka.attributeSelection.GainRatioAttributeEval " \
+		-S "weka.attributeSelection.Ranker -T 0.15 -N -1"
+}
+
+function build()
+{
+	# echo "Random Forest 0"
+	# model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" nn rfnn > logs/rfnn.txt
+
+	# echo "Random Forest 1"
+	# model "weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1" n rfn > logs/rfn.txt
+
+
+	# echo "J48 0"
+	# model "weka.classifiers.trees.J48 -C 0.25 -M 2" nn j48nn > logs/j48nn.txt
+
+	# echo "J48 1"
+	# model "weka.classifiers.trees.J48 -C 0.25 -M 2" n j48n > logs/j48n.txt
+
+
+	# echo "Naive Bayes 0"
+	# model "weka.classifiers.bayes.NaiveBayes" nn nbnn > logs/nbnn.txt
+
+	# echo "Naive Bayes 1"
+	# model "weka.classifiers.bayes.NaiveBayes" n nbn > logs/nbn.txt
+
+
+	# echo "MLP 0"
+	# model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" nn mlpnn > logs/mlpnn.txt
+
+	# echo "MLP 1"
+	# model "weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a" n mlpn > logs/mlpn.txt
+
+	echo "SMO 0"
+	model "weka.classifiers.functions.SMO -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"" nn smonn > logs/smonn.txt
+
+	echo "SMO 1"
+	model "weka.classifiers.functions.SMO -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"" n smon > logs/smon.txt
+}
+
 # Build a model to submit
 function model()
 {
-	if [ ! -f $TRAIN_FILE ]; then
-		echo "Train Data does not exist!"
-		exit 1
-	fi
+	# if [ ! -f $TRAIN_FILE ]; then
+	# 	echo "Train Data does not exist!"
+	# 	exit 1
+	# fi
 
-	model_args="weka.classifiers.trees.J48 -C 0.25 -M 2"
-	train_data=$TRAIN_FILE
-	output_model=$MODELS/j48.model
+	# model_args="weka.classifiers.trees.J48 -C 0.25 -M 2"
+	# train_data=$TRAIN_FILE
+	# output_model=$MODELS/j48.model
 
-	build_model "$model_args" $train_data $output_model
+	build_model "$1" $PREPROCESSED_DATA/train-$2.arff $MODELS/$3.model
 
 	echo "Model builded."
+}
+
+function run_models()
+{
+	# echo "Random Forest 0"
+	# run rf nn
+
+	# echo "Random Forest 1"
+	# run rf n
+
+
+	# echo "J48 0"
+	# run j48 nn
+
+	# echo "J48 1"
+	# run j48 n
+
+
+	# echo "Naive Bayes 0"
+	# run nb nn
+
+	# echo "Naive Bayes 1"
+	# run nb n
+
+
+	# echo "SMO 0"
+	# run smo nn
+
+	# echo "SMO 1"
+	# run smo n
+
+
+	# echo "MLP 0"
+	# run mlp nn
+
+	# echo "MLP 1"
+	# run mlp n
+
+
+
+	echo "IBK 0"
+	run ibk nn
+
+	echo "IBK 1"
+	run ibk n
+
 }
 
 # Run
 function run()
 {
-	model=$MODELS/$1.model
+	model=$MODELS/$1$2.model
 	train_data=$PREPROCESSED_DATA/train-$2.arff
 	unlabeled_data=$PREPROCESSED_DATA/test-$2.arff
-	output_classification=$SUBMISSION_DATA/submission-$1.csv
+	output_classification=$SUBMISSION_DATA/submission-$1$2.csv
 
 	classify $model $train_data $unlabeled_data $output_classification
 
 	echo "Data classified."
+}
+
+function exchange()
+{
+	for file in $(ls ./submission/old); do
+
+		cp ./submission/old/$file ./submission/$file
+
+		sed -i "s/,\"1/,\"7/g" ./submission/$file
+		sed -i "s/,\"2/,\"1/g" ./submission/$file
+		sed -i "s/,\"4/,\"2/g" ./submission/$file
+		sed -i "s/,\"6/,\"4/g" ./submission/$file
+		sed -i "s/,\"5/,\"6/g" ./submission/$file
+		sed -i "s/,\"7/,\"5/g" ./submission/$file
+
+	done
 }
 
 #===============================================================================
@@ -197,18 +375,19 @@ function download()
 # Submmit a model to the competition.
 function submit()
 {
-	MESSAGE=$1
+	FILE=$SUBMISSION_DATA/$1
+	MESSAGE=$2
 
 	if [ -z "$MESSAGE" ];
 	then
 		MESSAGE="test"
 	fi
 
-	echo "Submit: $MESSAGE"
+	echo "Submit $FILE: $MESSAGE"
 
 	source $HOME/bin/activate
 
-	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $SUBMISSION_FILE -m "$MESSAGE"
+	kaggle competitions submit -c data-mining-class-ufsc-20192 -f $FILE -m "$MESSAGE"
 
 }
 
@@ -289,7 +468,7 @@ function prerequisites()
 }
 
 case $1 in
-    prepare|preprocess|model|run)
+    prepare|preprocess|model|run|feature_selection|build|run_models|exchange|run)
 		;;
 
 	download|submit)

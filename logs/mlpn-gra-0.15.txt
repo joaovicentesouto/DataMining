@@ -1,0 +1,238 @@
+
+Options: -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a 
+
+=== Classifier model (full training set) ===
+
+Sigmoid Node 0
+    Inputs    Weights
+    Threshold    -17.49019910646466
+    Node 6    -18.823933942879115
+    Node 7    3.837612661449395
+    Node 8    4.260943458802261
+    Node 9    -6.0658846377226014
+    Node 10    17.22017959754641
+    Node 11    -8.874459355814368
+    Node 12    -5.216803876150863
+Sigmoid Node 1
+    Inputs    Weights
+    Threshold    5.312559234765631
+    Node 6    4.708116405726238
+    Node 7    -4.617315285236436
+    Node 8    5.748226540787729
+    Node 9    6.835348410026448
+    Node 10    -15.49063140435797
+    Node 11    -11.598328101731827
+    Node 12    -4.605567010191609
+Sigmoid Node 2
+    Inputs    Weights
+    Threshold    -24.67399697677349
+    Node 6    -4.771191346253587
+    Node 7    1.2332664649257605
+    Node 8    -1.956203513943259
+    Node 9    2.1868267507697166
+    Node 10    -7.35158837978408
+    Node 11    28.083783086547122
+    Node 12    -3.0952518860222793
+Sigmoid Node 3
+    Inputs    Weights
+    Threshold    -4.280624820489271
+    Node 6    -1.083356450116682
+    Node 7    -1.0795476055331499
+    Node 8    2.659241516254132
+    Node 9    -1.875423224702643
+    Node 10    -19.194545241010818
+    Node 11    0.4710060445491902
+    Node 12    3.44249944642348
+Sigmoid Node 4
+    Inputs    Weights
+    Threshold    -9.207124484705073
+    Node 6    2.408859629114475
+    Node 7    2.6015974007414577
+    Node 8    -2.1248505190691183
+    Node 9    1.5614777181897863
+    Node 10    5.238244715822641
+    Node 11    7.143606831850543
+    Node 12    -15.952473820892438
+Sigmoid Node 5
+    Inputs    Weights
+    Threshold    -0.595587346171961
+    Node 6    1.5437637950706087
+    Node 7    -3.236134022097713
+    Node 8    -4.995903470965579
+    Node 9    1.6581470427029341
+    Node 10    1.2345502053228583
+    Node 11    -3.235141317491649
+    Node 12    -2.7069787029741392
+Sigmoid Node 6
+    Inputs    Weights
+    Threshold    -35.896404569184426
+    Attrib PAR_SFMV24    44.467784649499606
+    Attrib PAR_SFM24    110.54555654501581
+    Attrib PAR_MFCC1    -2.7074966317326035
+    Attrib PAR_MFCCV1    -2.746815769131126
+    Attrib PAR_ASS    3.119381828634773
+    Attrib PAR_PEAK_RMS10FR_VAR    30.06981517577354
+    Attrib PAR_SFM15    1.0549332094350314
+    Attrib PAR_SFM11    3.223696057610731
+Sigmoid Node 7
+    Inputs    Weights
+    Threshold    7.884271391231184
+    Attrib PAR_SFMV24    -1.294815462450978
+    Attrib PAR_SFM24    -0.8449149856363058
+    Attrib PAR_MFCC1    21.2881663838223
+    Attrib PAR_MFCCV1    21.340940329283562
+    Attrib PAR_ASS    31.05231246270681
+    Attrib PAR_PEAK_RMS10FR_VAR    -4.562034195070559
+    Attrib PAR_SFM15    -0.7970254672880726
+    Attrib PAR_SFM11    -2.864584867217014
+Sigmoid Node 8
+    Inputs    Weights
+    Threshold    5.069729532623349
+    Attrib PAR_SFMV24    -1.3700344685897614
+    Attrib PAR_SFM24    0.27264578609377105
+    Attrib PAR_MFCC1    0.20177785775894075
+    Attrib PAR_MFCCV1    0.18894298228938122
+    Attrib PAR_ASS    2.288462583715091
+    Attrib PAR_PEAK_RMS10FR_VAR    -4.794836577567879
+    Attrib PAR_SFM15    -21.035751637583747
+    Attrib PAR_SFM11    -2.782866836317356
+Sigmoid Node 9
+    Inputs    Weights
+    Threshold    10.0119980753094
+    Attrib PAR_SFMV24    18.65456722948641
+    Attrib PAR_SFM24    -19.67177775195956
+    Attrib PAR_MFCC1    19.226550579401625
+    Attrib PAR_MFCCV1    19.294843068941844
+    Attrib PAR_ASS    5.7065617092917735
+    Attrib PAR_PEAK_RMS10FR_VAR    -10.234978849988071
+    Attrib PAR_SFM15    -13.902538367359396
+    Attrib PAR_SFM11    -0.7635271432919846
+Sigmoid Node 10
+    Inputs    Weights
+    Threshold    1.812972315469819
+    Attrib PAR_SFMV24    -0.20610048156617813
+    Attrib PAR_SFM24    -10.758235397691791
+    Attrib PAR_MFCC1    -2.406747033383309
+    Attrib PAR_MFCCV1    -2.4533891769987037
+    Attrib PAR_ASS    3.1657275653062054
+    Attrib PAR_PEAK_RMS10FR_VAR    -3.2120687753740382
+    Attrib PAR_SFM15    2.538577739883081
+    Attrib PAR_SFM11    0.2718949449731156
+Sigmoid Node 11
+    Inputs    Weights
+    Threshold    -12.712810194791707
+    Attrib PAR_SFMV24    -25.907108719690136
+    Attrib PAR_SFM24    4.79869177959371
+    Attrib PAR_MFCC1    -3.596914010742881
+    Attrib PAR_MFCCV1    -3.5680876046765047
+    Attrib PAR_ASS    -2.898157092263185
+    Attrib PAR_PEAK_RMS10FR_VAR    11.269277480952741
+    Attrib PAR_SFM15    1.6523215945077048
+    Attrib PAR_SFM11    0.452632228538499
+Sigmoid Node 12
+    Inputs    Weights
+    Threshold    -25.461771940174405
+    Attrib PAR_SFMV24    -47.86805108738089
+    Attrib PAR_SFM24    0.338471842147641
+    Attrib PAR_MFCC1    4.86714104746646
+    Attrib PAR_MFCCV1    4.837602894469614
+    Attrib PAR_ASS    -9.622287506896994
+    Attrib PAR_PEAK_RMS10FR_VAR    23.501934852702313
+    Attrib PAR_SFM15    -10.2165547367252
+    Attrib PAR_SFM11    -0.845346357744925
+Class Pop
+    Input
+    Node 0
+Class Blues
+    Input
+    Node 1
+Class Jazz
+    Input
+    Node 2
+Class Classical
+    Input
+    Node 3
+Class Rock
+    Input
+    Node 4
+Class Metal
+    Input
+    Node 5
+
+
+Time taken to build model: 16.63 seconds
+
+Time taken to test model on training data: 0.13 seconds
+
+=== Error on training data ===
+
+Correctly Classified Instances        9118               72.9732 %
+Incorrectly Classified Instances      3377               27.0268 %
+Kappa statistic                          0.6622
+Mean absolute error                      0.1246
+Root mean squared error                  0.2558
+Relative absolute error                 46.4911 %
+Root relative squared error             69.8707 %
+Total Number of Instances            12495     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.781    0.028    0.803      0.781    0.792      0.762    0.955     0.812     Pop
+                 0.862    0.046    0.735      0.862    0.794      0.764    0.968     0.760     Blues
+                 0.494    0.065    0.707      0.494    0.582      0.491    0.879     0.671     Jazz
+                 0.886    0.151    0.690      0.886    0.776      0.686    0.925     0.749     Classical
+                 0.716    0.044    0.750      0.716    0.733      0.685    0.928     0.736     Rock
+                 0.626    0.011    0.822      0.626    0.711      0.698    0.959     0.767     Metal
+Weighted Avg.    0.730    0.074    0.733      0.730    0.722      0.659    0.926     0.739     
+
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e    f   <-- classified as
+ 1230  151   24    0  147   23 |    a = Pop
+   97 1376   44   39   32    8 |    b = Blues
+    0  122 1484 1297  100    0 |    c = Jazz
+    0    6  382 3051    5    0 |    d = Classical
+  161  109  163   27 1399   94 |    e = Rock
+   44  108    3    8  183  578 |    f = Metal
+
+Time taken to perform cross-validation: 148.49 seconds
+
+
+=== Stratified cross-validation ===
+
+Correctly Classified Instances        8729               69.8599 %
+Incorrectly Classified Instances      3766               30.1401 %
+Kappa statistic                          0.6231
+Mean absolute error                      0.1292
+Root mean squared error                  0.265 
+Relative absolute error                 48.1914 %
+Root relative squared error             72.3815 %
+Total Number of Instances            12495     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.742    0.023    0.820      0.742    0.779      0.751    0.948     0.794     Pop
+                 0.830    0.045    0.730      0.830    0.777      0.744    0.959     0.757     Blues
+                 0.462    0.093    0.612      0.462    0.527      0.409    0.854     0.616     Jazz
+                 0.850    0.160    0.670      0.850    0.749      0.647    0.917     0.732     Classical
+                 0.664    0.046    0.728      0.664    0.695      0.642    0.924     0.725     Rock
+                 0.673    0.018    0.747      0.673    0.708      0.687    0.959     0.731     Metal
+Weighted Avg.    0.699    0.084    0.697      0.699    0.691      0.618    0.915     0.714     
+
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e    f   <-- classified as
+ 1169  159   18    2  196   31 |    a = Pop
+   93 1325   82   38   24   34 |    b = Blues
+    0  148 1388 1372   95    0 |    c = Jazz
+    0   14  495 2928    7    0 |    d = Classical
+  121   85  278   26 1297  146 |    e = Rock
+   42   83    8    7  162  622 |    f = Metal
+
+Model builded.
